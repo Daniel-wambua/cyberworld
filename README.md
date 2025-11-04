@@ -23,7 +23,7 @@ Cyber World delivers a jaw-dropping cinematic experience that transforms your br
 <details>
   <summary>Project Preview</summary>
 
-![Cyber World Screenshot](preview.png)
+![Cyber World Screenshot](images/preview.png)
 
 </details>
 
