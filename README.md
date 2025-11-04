@@ -240,7 +240,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 <p align="center">
   <i>© 2025</i><br>
   <i>Licensed under <a href="https://opensource.org/licenses/MIT">MIT</a></i><br>
-  <a href="https://github.com/Daniel-wambua"><img src="https://github.com/Daniel-wambua/cyberworld/blob/master/images/Neon%20Hooded%20Havoc%20Design.png?raw=true" /></a><br>
+  <a href="https://github.com/Daniel-wambua"><img src="https://i.ibb.co/4KtpYxb/octocat-clean-mini.png" /></a><br>
   <sup>Thanks for exploring the cosmos :)</sup>
 </p>
 
