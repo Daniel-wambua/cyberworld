@@ -1,6 +1,6 @@
 <h1 align="center">🌍 Cyber World</h1>
 <p align="center">
-<a href="https://github.com/Daniel-wambua/cyberworld"><img src="https://imgs.search.brave.com/PE3L28cSdt3-kQ6lciPYrp1AjBrpn06tBatBLlhXros/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/dmVjdG9yc3RvY2su/Y29tL2kvNTAwcC8z/MC8wMS9ncmVlbi1l/YXJ0aC1nbG9iZS1s/b2dvLXZlY3Rvci03/MjEzMDAxLmpwZw" width="120" /><br /></a>
+<a href="https://github.com/Daniel-wambua/cyberworld"><img src="https://img.freepik.com/premium-photo/globe-world-map-isolated-white-background_379858-7524.jpg" width="120" /><br /></a>
 <i>Cinematic 3D Earth visualization with infinite space exploration</i>
 <br />
 <i>Click Earth → Journey through procedurally generated galaxies</i>
