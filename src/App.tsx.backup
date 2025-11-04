@@ -1,0 +1,464 @@
+import { useRef, useEffect, useMemo, useState } from 'react';
+import { Canvas, useFrame, useThree, useLoader } from '@react-three/fiber';
+import { EffectComposer, Bloom, ChromaticAberration, DepthOfField } from '@react-three/postprocessing';
+import { OrbitControls, useTexture, Sphere, shaderMaterial } from '@react-three/drei';
+import { extend } from '@react-three/fiber';
+import * as THREE from 'three';
+import { BlendFunction } from 'postprocessing';
+import gsap from 'gsap';
+import './index.css';
+
+function Particles() {
+  const pointsRef = useRef<THREE.Points>(null);
+  
+  const { positions, colors } = useMemo(() => {
+    const count = 5000;
+    const positions = new Float32Array(count * 3);
+    const colors = new Float32Array(count * 3);
+    
+    for (let i = 0; i < count; i++) {
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(Math.random() * 2 - 1);
+      const radius = 15 + Math.random() * 50;
+      
+      positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
+      positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
+      positions[i * 3 + 2] = radius * Math.cos(phi);
+      
+      const colorChoice = Math.random();
+      if (colorChoice > 0.8) {
+        colors[i * 3] = 0;
+        colors[i * 3 + 1] = 0.9;
+        colors[i * 3 + 2] = 0.9;
+      } else if (colorChoice > 0.6) {
+        colors[i * 3] = 1;
+        colors[i * 3 + 1] = 0;
+        colors[i * 3 + 2] = 0.8;
+      } else if (colorChoice > 0.4) {
+        colors[i * 3] = 0.5;
+        colors[i * 3 + 1] = 0;
+        colors[i * 3 + 2] = 1;
+      } else {
+        colors[i * 3] = 1;
+        colors[i * 3 + 1] = 1;
+        colors[i * 3 + 2] = 1;
+      }
+    }
+    
+    return { positions, colors };
+  }, []);
+  
+  useFrame((state) => {
+    if (pointsRef.current) {
+      pointsRef.current.rotation.y += 0.0002;
+      const time = state.clock.elapsedTime;
+      pointsRef.current.position.y = Math.sin(time * 0.1) * 0.1;
+    }
+  });
+  
+  return (
+    <points ref={pointsRef}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          count={positions.length / 3}
+          array={positions}
+          itemSize={3}
+        />
+        <bufferAttribute
+          attach="attributes-color"
+          count={colors.length / 3}
+          array={colors}
+          itemSize={3}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        size={0.1}
+        vertexColors
+        transparent
+        opacity={0.9}
+        sizeAttenuation
+        blending={THREE.AdditiveBlending}
+      />
+    </points>
+  );
+}
+
+function GalaxyCore() {
+  const galaxyRef = useRef<THREE.Points>(null);
+  
+  const { positions, colors, sizes } = useMemo(() => {
+    const count = 8000;
+    const positions = new Float32Array(count * 3);
+    const colors = new Float32Array(count * 3);
+    const sizes = new Float32Array(count);
+    
+    for (let i = 0; i < count; i++) {
+      const radius = Math.random() * 3;
+      const spinAngle = radius * 5;
+      const branchAngle = ((i % 3) / 3) * Math.PI * 2;
+      
+      const randomX = Math.pow(Math.random(), 3) * (Math.random() < 0.5 ? 1 : -1) * 0.3;
+      const randomY = Math.pow(Math.random(), 3) * (Math.random() < 0.5 ? 1 : -1) * 0.3;
+      const randomZ = Math.pow(Math.random(), 3) * (Math.random() < 0.5 ? 1 : -1) * 0.3;
+      
+      positions[i * 3] = Math.cos(branchAngle + spinAngle) * radius + randomX;
+      positions[i * 3 + 1] = randomY;
+      positions[i * 3 + 2] = Math.sin(branchAngle + spinAngle) * radius + randomZ;
+      
+      const mixedColor = new THREE.Color();
+      const innerColor = new THREE.Color('#ff00ff');
+      const outerColor = new THREE.Color('#00ffff');
+      mixedColor.lerpColors(innerColor, outerColor, radius / 3);
+      
+      colors[i * 3] = mixedColor.r;
+      colors[i * 3 + 1] = mixedColor.g;
+      colors[i * 3 + 2] = mixedColor.b;
+      
+      sizes[i] = Math.random() * 0.02 + 0.01;
+    }
+    
+    return { positions, colors, sizes };
+  }, []);
+  
+  useFrame((state) => {
+    if (galaxyRef.current) {
+      galaxyRef.current.rotation.y += 0.0005;
+      galaxyRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.1) * 0.1;
+    }
+  });
+  
+  return (
+    <points ref={galaxyRef} position={[0, 0, -100]}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          count={positions.length / 3}
+          array={positions}
+          itemSize={3}
+        />
+        <bufferAttribute
+          attach="attributes-color"
+          count={colors.length / 3}
+          array={colors}
+          itemSize={3}
+        />
+        <bufferAttribute
+          attach="attributes-size"
+          count={sizes.length}
+          array={sizes}
+          itemSize={1}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        size={0.05}
+        vertexColors
+        transparent
+        opacity={0.9}
+        sizeAttenuation
+        blending={THREE.AdditiveBlending}
+        depthWrite={false}
+      />
+    </points>
+  );
+}
+
+function Earth() {
+  const earthRef = useRef<THREE.Mesh>(null);
+  const cloudsRef = useRef<THREE.Mesh>(null);
+  
+  const earthTexture = useMemo(() => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 4096;
+    canvas.height = 2048;
+    const ctx = canvas.getContext('2d')!;
+    
+    const gradient = ctx.createRadialGradient(
+      canvas.width / 2, canvas.height / 2, 0,
+      canvas.width / 2, canvas.height / 2, canvas.width / 2
+    );
+    gradient.addColorStop(0, '#0a2f4d');
+    gradient.addColorStop(0.4, '#084a6b');
+    gradient.addColorStop(0.7, '#0d5c7a');
+    gradient.addColorStop(1, '#001a2e');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    ctx.fillStyle = '#1a6b47';
+    ctx.globalAlpha = 1;
+    for (let i = 0; i < 200; i++) {
+      const x = Math.random() * canvas.width;
+      const y = Math.random() * canvas.height;
+      const size = Math.random() * 200 + 100;
+      const sides = Math.floor(Math.random() * 4) + 5;
+      
+      ctx.beginPath();
+      for (let j = 0; j <= sides; j++) {
+        const angle = (j / sides) * Math.PI * 2;
+        const px = x + Math.cos(angle) * size * (0.8 + Math.random() * 0.4);
+        const py = y + Math.sin(angle) * size * (0.8 + Math.random() * 0.4);
+        if (j === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.closePath();
+      ctx.fill();
+    }
+    
+    ctx.fillStyle = '#0f8a5f';
+    ctx.globalAlpha = 0.7;
+    for (let i = 0; i < 150; i++) {
+      const x = Math.random() * canvas.width;
+      const y = Math.random() * canvas.height;
+      const size = Math.random() * 150 + 80;
+      ctx.beginPath();
+      ctx.arc(x, y, size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    
+    ctx.strokeStyle = '#00ffcc';
+    ctx.lineWidth = 3;
+    ctx.globalAlpha = 0.15;
+    for (let i = 0; i < 100; i++) {
+      ctx.beginPath();
+      const x1 = Math.random() * canvas.width;
+      const y1 = Math.random() * canvas.height;
+      const x2 = x1 + (Math.random() - 0.5) * 300;
+      const y2 = y1 + (Math.random() - 0.5) * 300;
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+    }
+    
+    ctx.fillStyle = '#ffffff';
+    ctx.globalAlpha = 0.6;
+    for (let i = 0; i < 50; i++) {
+      const x = Math.random() * canvas.width;
+      const y = Math.random() * canvas.height;
+      const size = Math.random() * 15 + 5;
+      ctx.beginPath();
+      ctx.arc(x, y, size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    
+    return new THREE.CanvasTexture(canvas);
+  }, []);
+  
+  const bumpTexture = useMemo(() => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 2048;
+    canvas.height = 1024;
+    const ctx = canvas.getContext('2d')!;
+    
+    ctx.fillStyle = '#808080';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    ctx.fillStyle = '#ffffff';
+    for (let i = 0; i < 200; i++) {
+      const x = Math.random() * canvas.width;
+      const y = Math.random() * canvas.height;
+      const size = Math.random() * 100 + 50;
+      ctx.beginPath();
+      ctx.arc(x, y, size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    
+    return new THREE.CanvasTexture(canvas);
+  }, []);
+  
+  const cloudsTexture = useMemo(() => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 2048;
+    canvas.height = 1024;
+    const ctx = canvas.getContext('2d')!;
+    
+    ctx.fillStyle = 'rgba(255, 255, 255, 0)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    const gradient = ctx.createRadialGradient(
+      canvas.width / 2, canvas.height / 2, 0,
+      canvas.width / 2, canvas.height / 2, canvas.width / 3
+    );
+    
+    for (let i = 0; i < 600; i++) {
+      const x = Math.random() * canvas.width;
+      const y = Math.random() * canvas.height;
+      const size = Math.random() * 60 + 30;
+      
+      gradient.addColorStop(0, 'rgba(255, 255, 255, 0.8)');
+      gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+      
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+      ctx.beginPath();
+      ctx.arc(x, y, size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    
+    return new THREE.CanvasTexture(canvas);
+  }, []);
+  
+  useFrame(() => {
+    if (earthRef.current) {
+      earthRef.current.rotation.y += 0.0005;
+    }
+    if (cloudsRef.current) {
+      cloudsRef.current.rotation.y += 0.0007;
+    }
+  });
+  
+  return (
+    <group>
+      <mesh ref={earthRef} castShadow receiveShadow>
+        <sphereGeometry args={[2, 256, 256]} />
+        <meshStandardMaterial
+          map={earthTexture}
+          bumpMap={bumpTexture}
+          bumpScale={0.05}
+          roughness={0.9}
+          metalness={0.1}
+          emissive="#003344"
+          emissiveIntensity={0.15}
+        />
+      </mesh>
+      
+      <mesh ref={cloudsRef}>
+        <sphereGeometry args={[2.01, 128, 128]} />
+        <meshStandardMaterial
+          map={cloudsTexture}
+          transparent
+          opacity={0.4}
+          depthWrite={false}
+          roughness={1}
+        />
+      </mesh>
+      
+      <pointLight position={[5, 3, 5]} intensity={2} color="#ffffff" />
+      <pointLight position={[-5, -3, -5]} intensity={0.5} color="#00ffff" />
+    </group>
+  );
+}
+
+function CameraController() {
+  const controlsRef = useRef<any>(null);
+  const zoomLevelRef = useRef(0);
+  const [galaxyVisible, setGalaxyVisible] = useState(false);
+  const { camera, gl } = useThree();
+  
+  useEffect(() => {
+    const handleWheel = (event: WheelEvent) => {
+      if (event.ctrlKey || event.metaKey) {
+        return;
+      }
+      
+      const delta = event.deltaY * 0.003;
+      zoomLevelRef.current = Math.max(-100, Math.min(100, zoomLevelRef.current + delta));
+      
+      if (zoomLevelRef.current > 50) {
+        setGalaxyVisible(true);
+        
+        const progress = (zoomLevelRef.current - 50) / 50;
+        
+        if (controlsRef.current) {
+          controlsRef.current.enabled = false;
+        }
+        
+        gsap.to(camera.position, {
+          x: 0,
+          y: 0,
+          z: 8 - progress * 108,
+          duration: 1.5,
+          ease: 'power2.inOut'
+        });
+        
+        gsap.to(camera, {
+          fov: 75 + progress * 45,
+          duration: 1.5,
+          ease: 'power2.inOut',
+          onUpdate: () => {
+            camera.updateProjectionMatrix();
+          }
+        });
+      } else {
+        setGalaxyVisible(false);
+        
+        if (controlsRef.current) {
+          controlsRef.current.enabled = true;
+        }
+        
+        gsap.to(camera, {
+          fov: 75,
+          duration: 1,
+          ease: 'power2.out',
+          onUpdate: () => {
+            camera.updateProjectionMatrix();
+          }
+        });
+      }
+    };
+    
+    gl.domElement.addEventListener('wheel', handleWheel, { passive: true });
+    
+    return () => {
+      gl.domElement.removeEventListener('wheel', handleWheel);
+    };
+  }, [camera, gl]);
+  
+  return (
+    <>
+      <OrbitControls
+        ref={controlsRef}
+        enableZoom={true}
+        enablePan={true}
+        enableRotate={true}
+        minDistance={3}
+        maxDistance={20}
+        zoomSpeed={0.8}
+        rotateSpeed={0.5}
+        autoRotate={false}
+        autoRotateSpeed={0.5}
+      />
+      {galaxyVisible && <GalaxyCore />}
+    </>
+  );
+}
+
+function Scene() {
+  return (
+    <>
+      <color attach="background" args={['#000000']} />
+      <fog attach="fog" args={['#000000', 20, 80]} />
+      
+      <ambientLight intensity={0.4} />
+      <directionalLight position={[5, 3, 5]} intensity={1.5} color="#ffffff" />
+      <pointLight position={[10, 0, 10]} intensity={0.8} color="#00ffff" />
+      <pointLight position={[-10, 0, -10]} intensity={0.6} color="#ff00ff" />
+      
+      <Earth />
+      <Particles />
+      
+      <CameraController />
+      
+      <EffectComposer>
+        <Bloom
+          intensity={1.2}
+          luminanceThreshold={0.3}
+          luminanceSmoothing={0.9}
+          mipmapBlur
+        />
+      </EffectComposer>
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <div style={{ width: '100vw', height: '100vh' }}>
+      <Canvas
+        camera={{ position: [0, 0, 8], fov: 75 }}
+        dpr={[1, 2]}
+        gl={{ antialias: true, alpha: false }}
+      >
+        <Scene />
+      </Canvas>
+    </div>
+  );
+}
