@@ -1,11 +1,11 @@
 <h1 align="center">🌍 Cyber World</h1>
 <p align="center">
-<a href="https://github.com/yourusername/cyberworld"><img src="https://cdn.shopify.com/s/files/1/1976/5867/files/Havoc_LOGO-03_medium.png?v=1553743026" width="120" /><br /></a>
+<a href="https://github.com/Daniel-wambua/cyberworld"><img src="https://imgs.search.brave.com/PE3L28cSdt3-kQ6lciPYrp1AjBrpn06tBatBLlhXros/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/dmVjdG9yc3RvY2su/Y29tL2kvNTAwcC8z/MC8wMS9ncmVlbi1l/YXJ0aC1nbG9iZS1s/b2dvLXZlY3Rvci03/MjEzMDAxLmpwZw" width="120" /><br /></a>
 <i>Cinematic 3D Earth visualization with infinite space exploration</i>
 <br />
 <i>Click Earth → Journey through procedurally generated galaxies</i>
 <br />
-<b>🚀 <a href="https://github.com/yourusername/cyberworld">Built with React Three Fiber + WebGL</a></b> <br />
+<b>🚀 <a href="https://github.com/Daniel-wambua/cyberworld">Built with React Three Fiber + WebGL</a></b> <br />
 </p>
 
 ## Motive
@@ -16,7 +16,7 @@ Cyber World delivers a jaw-dropping cinematic experience that transforms your br
   <summary>About the Developer</summary>
 
 > **Professional Background**<br>
-> Passionate full stack developer specializing in WebGL, Three.js, and immersive web experiences. This project showcases advanced 3D rendering techniques, procedural generation, real-time audio synthesis, and performance optimization. Check out more work at [GitHub](https://github.com/yourusername).
+> Passionate full stack developer specializing in WebGL, Three.js, and immersive web experiences. This project showcases advanced 3D rendering techniques, procedural generation, real-time audio synthesis, and performance optimization. Check out more work at the  [lab](https://lab.havocsec.me).
 
 </details>
 
@@ -33,22 +33,7 @@ Cyber World delivers a jaw-dropping cinematic experience that transforms your br
 
 Cyber World is a React Three Fiber powered 3D visualization featuring a photorealistic Earth that launches you into an **infinite procedurally generated universe**. Click the planet to begin your journey through endless galaxies, black holes, and cosmic phenomena—all rendered in real-time.
 
-**Core Features:**
-- 🌍 **Photorealistic Earth** with 4K procedural textures
-- 🌃 **Dynamic day/night cycle** with 2000+ glowing cities
-- 🌙 **Orbiting Moon** with realistic crater mapping
-- ⭐ **15,000 star starfield** with color variation
-- 🚀 **Click-to-zoom infinite journey** through procedurally generated space
-- 🌌 **Procedural galaxies** that spawn every 20 zoom units
-- 🎨 **Procedural nebulae** generated every 30 zoom units
-- 🪐 **Procedural planets** with random colors and sizes
-- 🕳️ **Procedural black holes** with spinning accretion disks
-- 🎵 **Web Audio API sound system** with dynamic spatial audio
-- 🔊 **Interactive UI sounds** (click, hover, whoosh effects)
-- 🎚️ **Zoom-reactive audio** that intensifies with depth
-- ✨ **Bloom post-processing** for cinematic glow
-- 🎮 **Full orbit controls** (rotate, pan, zoom)
-- 📱 **Fully responsive** with touch support
+
 
 **Tech Stack:**
 - Vite 5.4 + React 18 + TypeScript 5
@@ -64,7 +49,7 @@ Cyber World is a React Three Fiber powered 3D visualization featuring a photorea
 
 ```bash
 # Clone the repo
-git clone https://github.com/yourusername/cyberworld.git
+git clone https://github.com/Daniel-wambua/cyberworld.git
 cd cyberworld
 
 # Install dependencies
@@ -81,7 +66,7 @@ Visit `http://localhost:3001` (or the port shown in terminal)
 
 **Vercel** (One-Click Deploy)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/cyberworld)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Daniel-wambua/cyberworld)
 
 **Manual Deployment:**
 
@@ -108,16 +93,6 @@ Visit `http://localhost:3001` (or the port shown in terminal)
 | **Adjust Rotation** | Use rotation slider | Change Earth spin speed (0-5x) |
 | **Fullscreen** | Click fullscreen button | Immersive full-screen mode |
 
-**Customization:**
-
-| Task | Location | Example |
-|------|----------|---------|
-| Change Earth textures | `src/App.tsx` → `createEarthTexture()` | Modify colors, continents |
-| Adjust star count | `src/App.tsx` → `StarField` | Change `count` from 15,000 |
-| Modify galaxy spawning | `src/App.tsx` → `ProceduralGalaxies` | Change `zoomLevel / 20` divisor |
-| Tune audio system | `src/App.tsx` → `SoundManager` | Adjust frequencies, gains |
-| Change bloom intensity | `src/App.tsx` → `Scene` | Modify `Bloom` component props |
-| Customize UI colors | `src/App.tsx` → button styles | Change RGBA values |
 
 **Project Structure:**
 ```
@@ -185,19 +160,6 @@ Click Earth → Auto-Zoom Activates → Procedural Generation
 
 ---
 
-## 🎵 Audio System
-
-**Ambient Sounds:**
-- **60 Hz sine wave** - Continuous space ambience
-- **40 Hz sawtooth wave** - Deep space drone
-- **Volume scales with zoom** - Intensity increases 0.03 → 0.08 gain
-
-**Interactive Sounds:**
-- **Click** - 800Hz → 400Hz descending (buttons)
-- **Hover** - 600Hz quick pulse (button hover)
-- **Start Journey** - 300Hz → 800Hz ascending sweep (Earth click)
-- **Zoom Whoosh** - 200Hz → 50Hz exponential decay (auto-zoom start)
-
 **Dynamic Effects:**
 - Frequencies modulate during infinite zoom
 - Gain adjusts based on `Math.min(zoomLevel / 100, 1)`
@@ -242,7 +204,7 @@ Click Earth → Auto-Zoom Activates → Procedural Generation
 
 ## License
 
-> _**[yourusername/cyberworld](https://github.com/yourusername/cyberworld)** is licensed under [MIT](https://github.com/yourusername/cyberworld/blob/HEAD/LICENSE) © 2025._<br>
+> _**[Daniel-wambua/cyberworld](https://github.com/Daniel-wambua/cyberworld)** is licensed under [MIT](https://github.com/Daniel-wambua/cyberworld/blob/HEAD/LICENSE) © 2025._<br>
 > <sup align="right">For information, see <a href="https://tldrlegal.com/license/mit-license">TLDR Legal > MIT</a></sup>
 
 <details>
@@ -278,7 +240,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 <p align="center">
   <i>© 2025</i><br>
   <i>Licensed under <a href="https://opensource.org/licenses/MIT">MIT</a></i><br>
-  <a href="https://github.com/yourusername"><img src="https://i.ibb.co/4KtpYxb/octocat-clean-mini.png" /></a><br>
+  <a href="https://github.com/Daniel-wambua"><img src="https://i.ibb.co/4KtpYxb/octocat-clean-mini.png" /></a><br>
   <sup>Thanks for exploring the cosmos :)</sup>
 </p>
 
